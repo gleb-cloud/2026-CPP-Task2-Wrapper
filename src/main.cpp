@@ -19,39 +19,39 @@ int main() {
 
 	const std::string base_text = "здравствуй мир. это проверка программы! добро пожаловать в c++.";
 
-	std::cout << "1. Замена слов:" << std::endl;
+	std::cout << "1. Замена слов:" << "\n";
 	{
 		TextProcessor doc("привет мир. это проверка программы! добро пожаловать в c++.");
 		Wrapper replace(&doc, &TextProcessor::replace_words, { {"old_word", "привет"}, {"new_word", "здравствуй"} });
-		std::cout << replace.execute() << std::endl << std::endl;
+		std::cout << replace.execute() << "\n\n";
 	}
 
-	std::cout << "2. Поиск словосочетания:" << std::endl;
+	std::cout << "2. Поиск словосочетания:" << "\n";
 	{
 		TextProcessor doc(base_text);
 		Wrapper find(&doc, &TextProcessor::find_phrase, { {"phrase", "проверка программы"} });
-		std::cout << find.execute() << std::endl << std::endl;
+		std::cout << find.execute() << "\n\n";
 	}
 
-	std::cout << "3. Заглавные буквы слов:" << std::endl;
+	std::cout << "3. Заглавные буквы слов:" << "\n";
 	{
 		TextProcessor doc(base_text);
 		Wrapper words(&doc, &TextProcessor::capitalize_words, {});
-		std::cout << words.execute() << std::endl << std::endl;
+		std::cout << words.execute() << "\n\n";
 	}
 
-	std::cout << "4. Заглавные буквы предложений:" << std::endl;
+	std::cout << "4. Заглавные буквы предложений:" << "\n";
 	{
 		TextProcessor doc(base_text);
 		Wrapper sentences(&doc, &TextProcessor::capitalize_sentences, {});
-		std::cout << sentences.execute() << std::endl << std::endl;
+		std::cout << sentences.execute() << "\n\n";
 	}
 
-	std::cout << "5. Нумерация предложений:" << std::endl;
+	std::cout << "5. Нумерация предложений:" << "\n";
 	{
 		TextProcessor doc(base_text);
 		Wrapper numbering(&doc, &TextProcessor::number_sentences, {});
-		std::cout << numbering.execute() << std::endl;
+		std::cout << numbering.execute() << "\n";
 	}
 
 	return 0;
