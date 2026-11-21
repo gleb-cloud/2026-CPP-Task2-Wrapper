@@ -89,9 +89,9 @@ public:
     std::string find_phrase(const Arguments& args) {
         std::string phrase = args.at("phrase");
 
-        if (text.find(phrase) != std::string::npos) { return "Словосочетание найдено"; }
+        if (text.find(phrase) != std::string::npos) { return "\xD1\xEB\xEE\xE2\xEE\xF1\xEE\xF7\xE5\xF2\xE0\xED\xE8\xE5 \xED\xE0\xE9\xE4\xE5\xED\xEE"; }
 
-        return "Словосочетание не найдено";
+        return "\xD1\xEB\xEE\xE2\xEE\xF1\xEE\xF7\xE5\xF2\xE0\xED\xE8\xE5 \xED\xE5 \xED\xE0\xE9\xE4\xE5\xED\xEE";
     }
 
     // 3. Заглавные первые буквы слов.
