@@ -18,7 +18,7 @@ private:
         unsigned char c = static_cast<unsigned char>(str[pos]);
 
         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { return true; }
-        if ((c >= 0xC0 && c <= 0xFF) || c == 0xA8 || c == 0xB8) { return true; }
+        if (c >= 0xC0 || c == 0xA8 || c == 0xB8) { return true; }
 
         return false;
     }
@@ -34,7 +34,7 @@ private:
             return;
         }
 
-        if (c >= 0xE0 && c <= 0xFF) {
+        if (c >= 0xE0) {
             str[pos] = static_cast<char>(c - 0x20);
             return;
         }
