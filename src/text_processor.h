@@ -12,64 +12,44 @@ private:
     std::string text;
 
     // Проверка, является ли символ буквой Windows-1251.
-    static bool is_letter(const std::string& str, size_t pos)
-    {
-        if (pos >= str.size())
-            return false;
+    static bool is_letter(const std::string& str, size_t pos) {
+        if (pos >= str.size()) { return false; }
 
         unsigned char c = static_cast<unsigned char>(str[pos]);
 
-        // Английские буквы.
-        if ((c >= 'A' && c <= 'Z') ||
-            (c >= 'a' && c <= 'z'))
-            return true;
-
-        // Русские буквы А-Я и а-я.
-        if ((c >= 0xC0 && c <= 0xFF) ||
-            c == 0xA8 || c == 0xB8)
-            return true;
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) { return true; }
+        if ((c >= 0xC0 && c <= 0xFF) || c == 0xA8 || c == 0xB8) { return true; }
 
         return false;
     }
 
     // Преобразование буквы в верхний регистр.
-    static void uppercase(std::string& str, size_t pos)
-    {
-        if (pos >= str.size())
-            return;
+    static void uppercase(std::string& str, size_t pos) {
+        if (pos >= str.size()) { return; }
 
         unsigned char c = static_cast<unsigned char>(str[pos]);
 
-        // Английские буквы.
-        if (c >= 'a' && c <= 'z')
-        {
+        if (c >= 'a' && c <= 'z') {
             str[pos] = static_cast<char>(c - 32);
             return;
         }
 
-        // Русские буквы а-я.
-        if (c >= 0xE0 && c <= 0xFF)
-        {
+        if (c >= 0xE0 && c <= 0xFF) {
             str[pos] = static_cast<char>(c - 0x20);
             return;
         }
 
-        // Русская буква ё.
-        if (c == 0xB8)
-        {
-            str[pos] = static_cast<char>(0xA8);
-        }
+        // буква ё.
+        if (c == 0xB8) { str[pos] = static_cast<char>(0xA8); }
     }
 
     // Удаление пробелов в начале и конце строки.
-    static std::string trim(const std::string& str)
-    {
+    static std::string trim(const std::string& str) {
         const std::string spaces = " \t\n\r";
 
         size_t first = str.find_first_not_of(spaces);
 
-        if (first == std::string::npos)
-            return "";
+        if (first == std::string::npos) { return ""; }
 
         size_t last = str.find_last_not_of(spaces);
 
@@ -77,103 +57,74 @@ private:
     }
 
 public:
-    explicit TextProcessor(const std::string& document)
-        : text(document)
-    {
-    }
+    explicit TextProcessor(const std::string& document) : text(document) {}
 
     // 1. Замена слов.
-    std::string replace_words(const Arguments& args)
-    {
+    std::string replace_words(const Arguments& args) {
         std::string old_word = args.at("old_word");
         std::string new_word = args.at("new_word");
 
-        if (old_word.empty())
-            return text;
+        if (old_word.empty()) { return text; }
 
         size_t pos = 0;
 
-        while ((pos = text.find(old_word, pos)) != std::string::npos)
-        {
-            bool left_boundary =
-                pos == 0 || !is_letter(text, pos - 1);
+        while ((pos = text.find(old_word, pos)) != std::string::npos) {
+            bool left_boundary = pos == 0 || !is_letter(text, pos - 1);
 
             size_t right_pos = pos + old_word.size();
 
-            bool right_boundary =
-                right_pos >= text.size() ||
-                !is_letter(text, right_pos);
+            bool right_boundary = right_pos >= text.size() || !is_letter(text, right_pos);
 
-            if (left_boundary && right_boundary)
-            {
+            if (left_boundary && right_boundary) {
                 text.replace(pos, old_word.size(), new_word);
                 pos += new_word.size();
             }
-            else
-            {
-                pos += old_word.size();
-            }
+            else { pos += old_word.size(); }
         }
 
         return text;
     }
 
     // 2. Поиск словосочетания.
-    std::string find_phrase(const Arguments& args)
-    {
+    std::string find_phrase(const Arguments& args) {
         std::string phrase = args.at("phrase");
 
-        if (text.find(phrase) != std::string::npos)
-            return "Словосочетание найдено";
+        if (text.find(phrase) != std::string::npos) { return "Словосочетание найдено"; }
 
         return "Словосочетание не найдено";
     }
 
     // 3. Заглавные первые буквы слов.
-    std::string capitalize_words(const Arguments&)
-    {
+    std::string capitalize_words(const Arguments&) {
         bool new_word = true;
 
-        for (size_t i = 0; i < text.size(); ++i)
-        {
-            if (is_letter(text, i))
-            {
-                if (new_word)
-                    uppercase(text, i);
+        for (size_t i = 0; i < text.size(); ++i) {
+            if (is_letter(text, i)) {
+                if (new_word) { uppercase(text, i); }
 
                 new_word = false;
             }
-            else
-            {
-                new_word = true;
-            }
+            else { new_word = true; }
         }
 
         return text;
     }
 
     // 4. Заглавные первые буквы предложений.
-    std::string capitalize_sentences(const Arguments&)
-    {
+    std::string capitalize_sentences(const Arguments&) {
         bool new_sentence = true;
 
-        for (size_t i = 0; i < text.size(); ++i)
-        {
+        for (size_t i = 0; i < text.size(); ++i) {
             unsigned char c = static_cast<unsigned char>(text[i]);
 
-            if (new_sentence && std::isspace(c))
-                continue;
+            if (new_sentence && std::isspace(c)) { continue; }
 
-            if (new_sentence && is_letter(text, i))
-            {
+            if (new_sentence && is_letter(text, i)) {
                 uppercase(text, i);
-
-
                 new_sentence = false;
             }
 
-            if (c == '.' || c == '!' || c == '?')
-                new_sentence = true;
+            if (c == '.' || c == '!' || c == '?') { new_sentence = true; }
         }
 
         return text;
@@ -187,31 +138,20 @@ public:
 
         int number = 1;
 
-        for (size_t i = 0; i < text.size(); ++i)
-        {
+        for (size_t i = 0; i < text.size(); ++i) {
             sentence += text[i];
 
-            if (text[i] == '.' ||
-                text[i] == '!' ||
-                text[i] == '?')
-            {
-                while (i + 1 < text.size() &&
-                    (text[i + 1] == '.' ||
-                        text[i + 1] == '!' ||
-                        text[i + 1] == '?'))
-                {
+            if (text[i] == '.' || text[i] == '!' || text[i] == '?') {
+                while (i + 1 < text.size() && (text[i + 1] == '.' || text[i + 1] == '!' || text[i + 1] == '?')) {
                     sentence += text[++i];
                 }
 
                 sentence = trim(sentence);
 
-                if (!sentence.empty())
-                {
-                    if (!result.empty())
-                        result += '\n';
+                if (!sentence.empty()) {
+                    if (!result.empty()) { result += '\n'; }
 
-                    result += std::to_string(number++) +
-                        ". " + sentence;
+                    result += std::to_string(number++) + ". " + sentence;
                 }
 
                 sentence.clear();
@@ -220,11 +160,8 @@ public:
 
         sentence = trim(sentence);
 
-        if (!sentence.empty())
-        {
-            if (!result.empty())
-                result += '\n';
-
+        if (!sentence.empty()) {
+            if (!result.empty()) { result += '\n'; }
             result += std::to_string(number) + ". " + sentence;
         }
 

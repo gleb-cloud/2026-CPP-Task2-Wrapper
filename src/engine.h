@@ -9,28 +9,22 @@
 class Engine
 {
 private:
-    std::map<std::string, Wrapper*> commands;
+	std::map<std::string, Wrapper*> commands;
 
 public:
-    void register_command(Wrapper* wrapper, const std::string& alias)
-    {
-        commands[alias] = wrapper;
-    }
+	void register_command(Wrapper* wrapper, const std::string& alias) {
+		commands[alias] = wrapper;
+	}
 
-    std::string execute(
-        const std::string& alias,
-        const Arguments& arguments = {}
-    )
-    {
-        auto it = commands.find(alias);
+	std::string execute(const std::string& alias, const Arguments& arguments = {}) {
+		auto it = commands.find(alias);
 
-        if (it == commands.end())
-        {
-            throw std::runtime_error("Команда не найдена");
-        }
+		if (it == commands.end()) {
+			throw std::runtime_error("Команда не найдена");
+		}
 
-        return it->second->execute(arguments);
-    }
+		return it->second->execute(arguments);
+	}
 };
 
 
