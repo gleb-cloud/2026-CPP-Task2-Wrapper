@@ -20,7 +20,7 @@ public:
 		auto it = commands.find(alias);
 
 		if (it == commands.end()) {
-			throw std::runtime_error("Команда не найдена");
+			throw std::runtime_error("Komanda ne naidena");
 		}
 
 		return it->second->execute(arguments);
